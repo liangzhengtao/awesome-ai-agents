@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Vector databases
+chroma_db/
+chroma_db*/
+*.chroma
+
+# Knowledge graphs
+knowledge_graph*.json
+kg_*.json
+
+# Checkpoints
+checkpoint.json
+*.checkpoint
+
+# Build artifacts
+*.egg
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

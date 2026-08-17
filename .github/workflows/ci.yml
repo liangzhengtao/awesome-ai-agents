@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Skills
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check all skill files exist
+        run: |
+          echo "Checking skill files..."
+          required_files=(
+            "skills/Agent框架/langchain-agents.md"
+            "skills/Agent框架/autogen-multiagent.md"
+            "skills/Agent框架/crewai-agents.md"
+            "skills/Agent框架/custom-agents.md"
+            "skills/工具调用/function-calling.md"
+            "skills/工具调用/mcp-integration.md"
+            "skills/工具调用/api-orchestration.md"
+            "skills/记忆系统/rag-memory.md"
+            "skills/记忆系统/long-term-memory.md"
+            "skills/多Agent协作/agent-communication.md"
+            "skills/多Agent协作/task-decomposition.md"
+            "skills/多Agent协作/agent-orchestration.md"
+          )
+          for f in "${required_files[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"
+              exit 1
+            fi
+            echo "OK: $f"
+          done
+
+      - name: Check minimum line count
+        run: |
+          echo "Checking minimum 150 lines per skill file..."
+          find skills/ -name "*.md" -type f | while read f; do
+            lines=$(wc -l < "$f")
+            if [ "$lines" -lt 150 ]; then
+              echo "TOO SHORT: $f ($lines lines, need 150+)"
+              exit 1
+            fi
+            echo "OK: $f ($lines lines)"
+          done
+
+      - name: Check required sections
+        run: |
+          echo "Checking required sections in skill files..."
+          required_sections=("When to Use" "Architecture" "Code Template" "Patterns" "Pitfalls" "Best Practices")
+          find skills/ -name "*.md" -type f | while read f; do
+            for section in "${required_sections[@]}"; do
+              if ! grep -q "## $section" "$f"; then
+                echo "MISSING SECTION '$section' in $f"
+                exit 1
+              fi
+            done
+            echo "OK: $f has all required sections"
+          done
+
+      - name: Check code blocks contain Python
+        run: |
+          echo "Checking for Python code templates..."
+          find skills/ -name "*.md" -type f | while read f; do
+            if ! grep -q '```python' "$f"; then
+              echo "WARNING: No Python code block found in $f"
+            fi
+          done
+
+      - name: Validate markdown links
+        run: |
+          echo "Checking for broken internal links..."
+          find skills/ -name "*.md" -type f | while read f; do
+            grep -oP '\[.*?\]\((\./[^)]+)\)' "$f" | grep -oP '\(\./[^)]+\)' | tr -d '()' | while read link; do
+              dir=$(dirname "$f")
+              target="$dir/$link"
+              if [ ! -f "$target" ]; then
+                echo "BROKEN LINK in $f: $link -> $target"
+              fi
+            done
+          done
