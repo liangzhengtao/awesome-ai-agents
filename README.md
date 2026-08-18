@@ -15,9 +15,9 @@ n<div align="center">
 
 ---
 
-> **Stop building basic chatbots. 12 skills to build production-ready AI agents.**
+> **Stop building basic chatbots. 12 skills to build production AI agents.**
 
-A curated collection of battle-tested skills for building AI agents — from single-agent tool calling to multi-agent orchestration. Each skill is a complete, copy-paste-ready guide with architecture diagrams, code templates, patterns, and pitfalls.
+A curated collection of tried-and-true skills for building AI agents — from single-agent tool calling to multi-agent orchestration. Each skill is a complete, copy-paste-ready guide with architecture diagrams, code templates, patterns, and pitfalls.
 
 ---
 
@@ -117,7 +117,7 @@ Every skill file follows the same structure:
 
 - **When to Use** — Clear decision matrix for when this skill applies
 - **Architecture** — ASCII diagram showing the system design
-- **Code Templates** — Production-ready Python code, copy-paste ready
+- **Code Templates** — Production Python code, copy-paste ready
 - **Patterns** — Common design patterns with code
 - **Pitfalls** — Things that will bite you (with solutions)
 - **Proven Patterns** — Hard-won production wisdom
