@@ -281,3 +281,39 @@ pip install pydantic
 - [Task Decomposition](../多Agent协作/task-decomposition.md) — Breaking tasks into subtasks
 - [CrewAI Agents](./crewai-agents.md) — Alternative multi-agent framework
 - [Agent Orchestration](../多Agent协作/agent-orchestration.md) — High-level orchestration patterns
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- 多个 agent 辩论/头脑风暴
+- 带执行反馈的代码生成
+- 层级式团队工作流
+- 需要生产级可观测性的多 agent 部署
+
+> 单 agent tool-calling 使用 LangChain 或自定义方案即可，无需 AutoGen。
+
+### 核心步骤
+
+1. **双 Agent 对话** — 使用 `ConversableAgent` 创建 assistant 和 user_proxy，`initiate_chat` 启动对话
+2. **群聊** — 使用 `GroupChat` + `GroupChatManager` 实现多 agent 群聊，LLM 自动选择发言者
+3. **嵌套聊天** — 使用 `register_nested_chats` 在 agent 响应后自动触发代码审查
+4. **自定义发言选择** — 实现 `custom_speaker_selection` 函数根据对话内容路由到正确的 agent
+5. **异步执行** — 使用 `asyncio.gather` 并行运行多个 agent 对话
+
+### 模板说明
+
+- 双 Agent 对话 — assistant + user_proxy 的基础对话模板
+- 群聊 — planner + coder + reviewer 三 agent 协作完成 FastAPI 开发
+- 嵌套聊天 — developer agent 自动触发 code reviewer 的质量控制
+- 辩论模式 — proponent + opponent + judge 的辩论求解模式
+
+### 常见陷阱
+
+1. **无限循环** — agent 持续回复不终止，始终设置 `max_round` 和 `is_termination_msg`
+2. **成本爆炸** — 群聊产生大量 LLM 调用，简单 agent 使用便宜模型
+3. **发言者混乱** — 错误的 agent 发言，使用显式 `speaker_selection_method`
+4. **代码执行风险** — agent 运行任意代码，生产环境使用 Docker 容器沙箱
+5. **消息溢出** — 长对话超出上下文窗口，实现消息截断或摘要

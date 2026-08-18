@@ -331,3 +331,39 @@ def cached_search(query: str) -> str:
 - [API Orchestration](./api-orchestration.md) — Combining multiple APIs
 - [Custom Agents](../Agent框架/custom-agents.md) — Using tools in agent loops
 - [RAG Memory](../记忆系统/rag-memory.md) — Retrieval as a tool
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- Agent 需要与外部系统交互
+- 从文本中提取结构化数据
+- 用自然语言查询数据库
+- 实时 API 集成
+
+> 简单文本生成不需要 function calling，直接使用 chat completions。
+
+### 核心步骤
+
+1. **定义工具 Schema** — 使用 JSON Schema 描述工具的参数、类型、必填项和描述
+2. **实现工具函数** — 编写实际的函数实现，映射函数名到函数
+3. **Agent 循环** — 发送消息 + tools 给 LLM，解析 tool_calls，执行函数，将结果作为 tool message 返回
+4. **并行工具调用** — 处理单个 LLM 响应中的多个 tool_calls
+5. **强制工具使用** — 使用 `tool_choice` 参数强制 LLM 调用特定工具
+
+### 模板说明
+
+- OpenAI Function Calling — 完整的定义工具 → 实现 → 循环 → 返回结果流程
+- Anthropic Tool Use — Claude 的 tool_use 协议和 tool_result 返回格式
+- 并行工具调用 — 单个响应中处理多个 tool_calls
+- 强制工具使用 — `tool_choice` 的三种用法（auto、required、指定工具名）
+
+### 常见陷阱
+
+1. **Schema 不匹配** — LLM 生成无效参数，使用严格 JSON Schema + Pydantic 验证
+2. **工具名拼写错误** — LLM 幻觉出不存在的函数名，使用 `tool_choice` 强制有效名称
+3. **遗漏 tool message** — 忘记将工具结果发回 LLM，导致对话上下文断裂
+4. **慢工具超时** — API 调用挂起阻塞 agent，为所有外部调用设置超时
+5. **Provider 差异** — OpenAI vs Anthropic schema 格式不同，抽象为统一接口

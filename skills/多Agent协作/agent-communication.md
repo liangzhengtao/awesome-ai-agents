@@ -326,3 +326,39 @@ class Blackboard:
 - [Agent Orchestration](./agent-orchestration.md) — High-level coordination
 - [AutoGen Multi-Agent](../Agent框架/autogen-multiagent.md) — Framework implementation
 - [Long-Term Memory](../记忆系统/long-term-memory.md) — Shared memory between agents
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- 两个或多个 agent 需要共享信息
+- Agent 需要协商或达成共识
+- 构建多 agent 流水线
+- Agent 运行在不同进程/机器上
+
+> 单 agent 多工具使用 function calling；单向委派（无反馈）使用任务分解。
+
+### 核心步骤
+
+1. **消息总线** — 实现 MessageBus 中央消息路由，支持点对点和广播通信
+2. **协商协议** — 多轮协商：各 agent 提出方案 → 评估 → 基于反馈修订 → 达成共识
+3. **事件驱动通信** — 使用 EventBus 发布/订阅类型化事件，解耦 agent 之间的直接依赖
+4. **请求-响应模式** — Agent A 向 Agent B 发送请求，等待响应，使用 asyncio.Event 同步
+5. **黑板模式** — 共享状态空间，agent 读写黑板上的数据，使用锁保证并发安全
+
+### 模板说明
+
+- MessageBus — 注册 agent、路由消息、广播、事件订阅的完整消息总线
+- NegotiatingAgent — 多轮协商协议，支持提案、评估、修订、共识检测
+- EventBus — 异步事件驱动通信，支持类型化事件和通配符订阅
+- 通信模式 — 请求-响应、流水线、黑板（共享状态）
+
+### 常见陷阱
+
+1. **消息风暴** — Agent 互相触发无止境，设置每轮最大消息深度
+2. **死锁** — 两个 agent 互相等待对方响应，为所有请求设置超时
+3. **消息丢失** — 异步处理器丢弃消息，使用持久队列（Redis 等）
+4. **Schema 漂移** — Agent 期望不同消息格式，定义严格的消息 schema（Pydantic）
+5. **无界收件箱** — 消息累积不处理，设置收件箱大小限制

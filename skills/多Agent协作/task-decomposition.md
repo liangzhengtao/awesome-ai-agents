@@ -334,3 +334,39 @@ async def iterative_refine(task: str, max_iterations: int = 3):
 - [Agent Orchestration](./agent-orchestration.md) — High-level coordination
 - [CrewAI Agents](../Agent框架/crewai-agents.md) — Built-in task pipeline
 - [AutoGen Multi-Agent](../Agent框架/autogen-multiagent.md) — Group chat decomposition
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- 任务过于复杂，单个 agent 无法完成
+- 不同子任务需要不同专业能力
+- 子任务可以并行执行
+- 需要每个子任务有明确的责任人
+
+> 简单单步任务直接使用一个 agent 即可。
+
+### 核心步骤
+
+1. **LLM 任务分解** — 使用 Pydantic 结构化输出定义 Subtask（id、description、dependencies、assigned_role）
+2. **依赖解析执行** — 按 execution_order 分组，同组任务 asyncio.gather 并行执行，异组按序执行
+3. **递归分解** — 对高复杂度子任务递归分解，直到达到最大深度后直接执行
+4. **自适应分解** — 记录执行失败历史，下次分解时避免导致失败的模式
+5. **Map-Reduce** — 将任务拆分为并行 map 任务处理数据，再 reduce 合并结果
+
+### 模板说明
+
+- TaskDecomposer — LLM 驱动的任务分解器，输出结构化 TaskPlan
+- TaskExecutor — 带依赖解析的任务执行器，支持并行执行和失败中止
+- RecursiveDecomposer — 递归分解 + 执行，处理未知结构的复杂任务
+- AdaptiveDecomposer — 从失败中学习的自适应分解器
+
+### 常见陷阱
+
+1. **过度分解** — 任务拆得太细，开销占比过大，设置最小任务复杂度阈值
+2. **循环依赖** — Task A 依赖 B 又依赖 A，执行前检测环路
+3. **子任务描述模糊** — Agent 不知道做什么，要求具体可操作的描述
+4. **依赖缺失** — 任务在输入未就绪时就执行，执行前验证依赖图
+5. **成本爆炸** — 子任务过多 = LLM 调用过多，限制分解深度和广度

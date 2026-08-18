@@ -380,3 +380,39 @@ async def discover_and_act(session, query):
 - [API Orchestration](./api-orchestration.md) — Combining multiple APIs
 - [Custom Agents](../Agent框架/custom-agents.md) — Building agent loops
 - [Long-Term Memory](../记忆系统/long-term-memory.md) — MCP as a memory source
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- 需要跨 provider 的标准化工具接口
+- 为多个 agent 构建可复用的工具服务器
+- 集成 Claude、Cursor、Kimi Code 等支持 MCP 的客户端
+- 需要通过协议发现工具的能力
+
+> 简单一次性工具调用使用 function calling 更简单；高频低延迟场景直接函数调用更快。
+
+### 核心步骤
+
+1. **构建 MCP Server** — 使用 `mcp.server.Server` 定义 tools（功能调用）和 resources（数据访问）
+2. **实现工具处理器** — 在 `call_tool` 中根据工具名分发到具体实现
+3. **连接 MCP Server** — 使用 `stdio_client` 连接本地服务器，`list_tools()` 发现可用工具
+4. **转换为 OpenAI 格式** — 将 MCP tool schema 转换为 OpenAI function calling 格式
+5. **多服务器连接** — 同时连接多个 MCP server，使用命名空间前缀避免工具名冲突
+
+### 模板说明
+
+- MCP Server — 定义 query_database 和 send_email 工具的完整服务器
+- MCP Client — 连接服务器、发现工具、执行 agent 循环的完整客户端
+- Resources 和 Prompts — 暴露数据源和可复用 prompt 模板
+- 多服务器 Agent — 同时连接 database、email、filesystem 三个服务器
+
+### 常见陷阱
+
+1. **服务器崩溃** — MCP server 进程异常退出，添加健康检查和自动重启
+2. **工具名冲突** — 多个服务器有同名工具，使用 `server_name__tool_name` 命名空间
+3. **Schema 漂移** — 服务器更新破坏客户端兼容性，锁定服务器版本并验证 schema
+4. **安全风险** — MCP server 暴露敏感操作，对工具调用进行认证和授权
+5. **大资源读取** — 通过 resource 读取大文件导致性能问题，实现分页和流式传输

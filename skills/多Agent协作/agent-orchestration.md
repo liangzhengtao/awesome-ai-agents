@@ -428,3 +428,39 @@ class CheckpointOrchestrator:
 - [Task Decomposition](./task-decomposition.md) — Breaking tasks into subtasks
 - [CrewAI Agents](../Agent框架/crewai-agents.md) — Built-in orchestration framework
 - [AutoGen Multi-Agent](../Agent框架/autogen-multiagent.md) — Group chat orchestration
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- 多个 agent 协作完成共同目标
+- 复杂工作流带条件分支
+- 需要监控、错误处理和恢复
+- 不同专业能力的 agent 协同工作
+
+> 单 agent 多工具使用简单 agent 循环；两个 agent 来回对话使用直接通信。
+
+### 核心步骤
+
+1. **顺序流水线** — Agent1 → Agent2 → Agent3 依次执行，带日志和错误处理
+2. **扇出/扇入** — 多个 agent 并行执行同一任务，aggregator 合并结果
+3. **动态路由** — LLM 分析任务内容，将任务路由到最合适的 agent（用便宜模型做路由决策）
+4. **编排器-Worker** — 管理器 LLM 动态创建和分配任务给 worker，支持多轮协调
+5. **状态机编排** — 使用有限状态机（Analyze → Plan → Execute → Review → Complete）驱动 agent 流转
+
+### 模板说明
+
+- PipelineOrchestrator — 顺序流水线，支持步骤间数据转换和执行报告
+- FanOutFanInOrchestrator — 并行扇出 + 聚合器扇入
+- RouterOrchestrator — LLM 驱动的动态任务路由，使用 Pydantic 结构化输出
+- StateMachineOrchestrator — 有限状态机驱动的 agent 编排
+
+### 常见陷阱
+
+1. **无错误恢复** — 一个 agent 失败导致全部终止，为每个 agent 实现 try/except + 降级
+2. **无界编排** — 编排器永不终止，设置最大轮次和超时
+3. **单点故障** — 编排器 LLM 宕机，添加备用编排器
+4. **成本爆炸** — 动态路由产生大量 LLM 调用，路由决策用便宜模型
+5. **无可观测性** — 无法调试 agent 行为，记录每个状态转换和 agent 输出

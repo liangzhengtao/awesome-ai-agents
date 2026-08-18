@@ -416,3 +416,39 @@ def self_correcting_agent(query: str, max_retries: int = 3):
 - [Function Calling](../工具调用/function-calling.md) — Underlying tool mechanism
 - [Long-Term Memory](../记忆系统/long-term-memory.md) — Add persistent memory
 - [MCP Integration](../工具调用/mcp-integration.md) — Use MCP servers as tools
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- 学习 agent 工作原理（最佳学习方式）
+- 最小依赖、快速启动
+- 需要完全控制每个决策
+- 简单的 tool-calling agent
+
+> 复杂多 agent 工作流建议使用 LangGraph 或 AutoGen。
+
+### 核心步骤
+
+1. **定义工具** — 创建工具函数和 JSON Schema 描述，映射函数名到实现
+2. **ReAct 循环** — 实现 think → decide → act → observe 的 agent 循环，处理 tool_calls 和最终回复
+3. **添加记忆** — 使用 `history` 列表维护对话历史，dataclass 封装 Agent 类
+4. **流式输出** — 处理 streaming response 中的 delta.content 和 delta.tool_calls
+5. **结构化输出** — 使用 Pydantic 模型定义 AgentResponse schema，强制 LLM 返回结构化决策
+
+### 模板说明
+
+- 最小 ReAct Agent — 约 80 行纯 Python 实现完整的 ReAct agent
+- 记忆 Agent — 使用 dataclass 封装的 Agent 类，支持多轮对话
+- 可观测 Agent — 带决策日志和流式输出的 ObservableAgent
+- 结构化 Agent — 使用 `response_format` 强制 LLM 返回 JSON schema
+
+### 常见陷阱
+
+1. **无错误处理** — 工具调用失败导致 agent 崩溃，用 try/except 包裹每个工具调用
+2. **无界循环** — agent 永不终止，始终强制 `max_turns`
+3. **上下文窗口溢出** — 历史无限增长，截断或摘要旧消息
+4. **工具注入** — 用户诱导 agent 恶意调用工具，验证工具输入并清洗 prompt
+5. **阻塞 I/O** — 同步工具调用阻塞流式输出，使用 async 工具 + asyncio

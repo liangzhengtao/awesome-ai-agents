@@ -408,3 +408,39 @@ pip install pyvis
 - [Function Calling](../工具调用/function-calling.md) — Connect memory to agents
 - [Custom Agents](../Agent框架/custom-agents.md) — Building agents with memory
 - [Agent Communication](../多Agent协作/agent-communication.md) — Shared memory between agents
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- Agent 需要跨会话记忆
+- 知识具有复杂关系（知识图谱）
+- Agent 应随时间学习用户偏好
+- 需要追踪事实而非仅文档
+
+> 短文档检索使用 RAG 更简单；无状态单轮交互不需要记忆系统。
+
+### 核心步骤
+
+1. **知识图谱记忆** — 使用 NetworkX 构建实体-关系图，LLM 从对话中提取实体和关系并添加到图中
+2. **情景记忆** — 使用向量数据库存储对话摘要，通过语义搜索回忆相关历史对话
+3. **统一记忆系统** — 组合知识图谱（事实）+ 情景记忆（对话）+ 工作记忆（当前上下文）
+4. **自动事实提取** — 从每条用户消息中被动提取事实，存入知识图谱
+5. **记忆整合** — 定期合并重复实体、删除长期未访问的记忆
+
+### 模板说明
+
+- KnowledgeGraphMemory — NetworkX 知识图谱，支持实体添加、查询、子图搜索
+- EpisodicMemory — ChromaDB 存储对话摘要，支持语义搜索回忆
+- AgentMemory — 统一记忆系统，observe 处理新消息，recall 从所有层收集上下文
+- 记忆模式 — 自动事实提取、记忆整合、遗忘旧记忆
+
+### 常见陷阱
+
+1. **实体提取错误** — LLM 提取错误实体，使用结构化输出验证并去重
+2. **图爆炸** — 节点过多查询效率下降，剪枝低提及节点，使用图分区
+3. **记忆冲突** — 存储矛盾事实，追踪时间戳，优先使用最新事实
+4. **隐私问题** — 记忆中包含敏感数据，实现数据保留策略和删除机制
+5. **检索延迟** — 图查询较慢，缓存频繁查询，限制搜索深度

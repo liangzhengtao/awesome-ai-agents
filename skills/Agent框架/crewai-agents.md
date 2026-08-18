@@ -307,3 +307,39 @@ pip install langchain-openai
 - [Agent Orchestration](../多Agent协作/agent-orchestration.md) — High-level patterns
 - [Task Decomposition](../多Agent协作/task-decomposition.md) — Breaking tasks apart
 - [API Orchestration](../工具调用/api-orchestration.md) — Tool integration patterns
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- 基于角色的 agent 协作（研究 → 写作 → 编辑）
+- 内容生成流水线
+- 业务流程自动化
+- 需要结构化任务流水线的场景
+
+> 简单单 agent 任务使用 LangChain 或自定义方案即可。
+
+### 核心步骤
+
+1. **定义 Agent 角色** — 为每个 agent 设定 role（角色）、goal（目标）、backstory（背景故事），背景故事越详细输出质量越高
+2. **定义 Task** — 为每个任务设定 description、expected_output、agent，使用 `context` 参数声明任务依赖
+3. **创建 Crew** — 将 agents 和 tasks 组合成 Crew，选择 `Process.SEQUENTIAL` 或 `Process.HIERARCHICAL`
+4. **添加自定义工具** — 继承 `BaseTool` 实现 Web 搜索、文件写入等自定义工具
+5. **执行并迭代** — `crew.kickoff()` 执行，可多次运行并将输出反馈作为下一轮输入
+
+### 模板说明
+
+- 基础 Crew — researcher + writer + editor 三 agent 顺序协作
+- 自定义工具 — WebSearchTool 和 FileWriterTool 的完整实现
+- 层级模式 — Engineering Manager + Backend Dev + Frontend Dev 的管理器委派模式
+- 异步执行 — 使用 `kickoff_async()` + `asyncio.gather` 并行运行多个 Crew
+
+### 常见陷阱
+
+1. **角色重叠** — agent 职责不清晰导致重复工作，定义明确不重叠的职责
+2. **委派循环** — manager 反复委派来回，设置 `max_iter` 和 `max_rpm` 限制
+3. **背景故事太泛** — 模糊的角色产生泛泛的输出，编写具体详细的背景故事
+4. **无输出验证** — agent 输出可能不符合预期格式，使用 `output_pydantic` 或 `output_json`
+5. **Token 浪费** — verbose 模式下 agent 过度解释，生产环境使用 `verbose=False`

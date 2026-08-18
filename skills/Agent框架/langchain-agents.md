@@ -242,3 +242,39 @@ pip install langsmith
 - [Function Calling](../工具调用/function-calling.md) — Underlying tool-use mechanism
 - [RAG Memory](../记忆系统/rag-memory.md) — Add knowledge retrieval to agents
 - [Task Decomposition](../多Agent协作/task-decomposition.md) — Break complex tasks into subtasks
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- 需要带结构化输出的 tool-calling agent
+- 快速原型化对话式 agent
+- 复杂多步骤工作流
+- 需要持久化对话记忆的 agent
+
+> 简单聊天机器人无需此框架，直接使用 LangChain ChatModel。
+
+### 核心步骤
+
+1. **定义工具** — 使用 `@tool` 装饰器定义工具函数，编写清晰的 docstring 帮助 LLM 选择工具
+2. **初始化 LLM** — 使用 `ChatOpenAI` 初始化，设置 `temperature=0` 确保一致性
+3. **创建 Agent** — 使用 `create_react_agent(llm, tools)` 创建基于 LangGraph 的 ReAct agent
+4. **添加记忆** — 使用 `MemorySaver` 实现会话持久化，生产环境替换为 `PostgresSaver`
+5. **流式输出** — 设置 `streaming=True` 实时输出 agent 的推理过程
+
+### 模板说明
+
+- 基础 Agent — 带 search_web、calculate、read_file 工具的完整 agent
+- 记忆 Agent — 使用 MemorySaver 实现跨轮次对话记忆
+- 自定义 Agent — 带 System Prompt 人设的数据分析 agent
+- 流式 Agent — 逐 token 实时输出推理过程
+
+### 常见陷阱
+
+1. **无限循环** — Agent 持续调用工具不收敛，需设置 `recursion_limit`
+2. **工具幻觉** — LLM 编造工具名或参数，使用 `with_structured_output()` 强制严格 schema
+3. **上下文溢出** — 长对话超出 token 限制，使用摘要记忆或滑动窗口
+4. **阻塞工具** — 慢速 API 调用阻塞整个 agent，使用 `async` 工具实现
+5. **成本爆炸** — 无限制的工具调用循环，设置 `max_iterations` 并跟踪 token 用量

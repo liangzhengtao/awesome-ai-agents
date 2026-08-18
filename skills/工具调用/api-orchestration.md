@@ -353,3 +353,39 @@ async def stripe_webhook(request: Request):
 - [MCP Integration](./mcp-integration.md) — Standardized tool servers
 - [Custom Agents](../Agent框架/custom-agents.md) — Agent loop fundamentals
 - [Task Decomposition](../多Agent协作/task-decomposition.md) — Breaking tasks into API calls
+
+---
+
+## 中文版本
+
+### 使用场景
+
+- Agent 需要按顺序调用多个 API
+- 合并来自不同服务的结果
+- 为 agent 构建数据管道
+- 跨 API 边界的错误恢复
+
+> 单个 API 调用直接使用 requests 即可，无需编排。
+
+### 核心步骤
+
+1. **弹性 API 客户端** — 实现重试、缓存（TTL）、熔断器（CircuitBreaker）的生产级客户端
+2. **并行 API 调用** — 使用 `asyncio.gather` 同时调用多个独立 API，`return_exceptions=True` 优雅处理失败
+3. **API 链 + 降级** — 注册多个 provider 按优先级尝试，自动降级到备选方案
+4. **速率限制** — 实现 Token Bucket 速率限制器，按 API endpoint 独立限流
+5. **响应标准化** — 不个 API 返回格式不同，统一转换为通用格式
+
+### 模板说明
+
+- ResilientAPIClient — 带重试、缓存、熔断器的 httpx 异步客户端
+- 并行 API 调用 — asyncio.gather 同时获取用户资料、订单、偏好、推荐
+- API Chain — 多 provider 降级链（OpenAI → Cohere → 本地模型）
+- RateLimiter — Token Bucket 速率限制器实现
+
+### 常见陷阱
+
+1. **无超时** — API 无限挂起，始终设置连接超时和读取超时
+2. **顺序调用** — 独立 API 串行调用浪费时间，使用 asyncio.gather 并行
+3. **无重试逻辑** — 瞬态故障导致 agent 失败，使用指数退避 + 抖动重试
+4. **缓存失效** — 缓存返回过期数据，使用 TTL 缓存 + 手动失效机制
+5. **API key 泄露** — 密钥泄露到日志或错误信息中，日志中遮蔽敏感 header
