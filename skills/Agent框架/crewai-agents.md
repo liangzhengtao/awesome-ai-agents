@@ -48,7 +48,7 @@ from crewai import Agent, Task, Crew, Process
 # Define agents with roles
 researcher = Agent(
     role="Senior Research Analyst",
-    goal="Find comprehensive, accurate information on the given topic",
+    goal="Find complete, accurate information on the given topic",
     backstory="""You are an experienced researcher who digs deep into topics.
     You always verify facts from multiple sources and provide citations.""",
     verbose=True,
@@ -284,7 +284,7 @@ task = Task(
 | No output validation | Agent output may not match expected format | Use `output_pydantic` or `output_json` |
 | Token waste | Agents over-explain in verbose mode | Use `verbose=False` in production |
 
-## Best Practices
+## Proven Patterns
 
 1. **Write detailed backstories** — they dramatically affect output quality
 2. **Use `context` parameter on tasks** — makes data flow explicit between tasks

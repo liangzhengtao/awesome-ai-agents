@@ -59,7 +59,7 @@ Every skill file must follow this structure:
 |---------|---------|----------|
 | ... | ... | ... |
 
-## Best Practices
+## Proven Patterns
 
 1. ...
 2. ...

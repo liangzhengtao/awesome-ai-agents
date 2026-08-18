@@ -219,7 +219,7 @@ response = agent.invoke({
 | Error swallowing | Tool errors silently ignored | Add explicit error handling in tools |
 | Cost explosion | Unbounded tool calls in a loop | Set `max_iterations` and track token usage |
 
-## Best Practices
+## Proven Patterns
 
 1. **Always define tool docstrings** — the LLM uses them to decide which tool to call
 2. **Use Pydantic for tool inputs** — gives the LLM structured schemas with descriptions

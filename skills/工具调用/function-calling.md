@@ -306,7 +306,7 @@ def cached_search(query: str) -> str:
 | Argument injection | User crafts input to exploit tools | Sanitize and validate all tool arguments |
 | Provider differences | OpenAI vs Anthropic schemas differ | Abstract behind a unified interface |
 
-## Best Practices
+## Proven Patterns
 
 1. **Write clear tool descriptions** — the LLM relies on them to decide when to call tools
 2. **Use strict JSON Schema** — define `required` fields, `enum` constraints, and type annotations

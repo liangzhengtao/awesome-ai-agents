@@ -314,7 +314,7 @@ def incremental_ingest(rag: RAGMemory, documents: list[dict]):
 | Context overflow | Too many chunks in prompt | Limit to 3-5 most relevant chunks |
 | Hallucination | LLM ignores context and makes things up | Strong system prompt + citation requirements |
 
-## Best Practices
+## Proven Patterns
 
 1. **Chunk size matters** — 300-800 characters works well for most use cases
 2. **Use overlap** — 50-100 character overlap prevents losing context at boundaries

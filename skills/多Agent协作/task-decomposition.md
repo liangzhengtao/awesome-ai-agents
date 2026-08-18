@@ -319,7 +319,7 @@ async def iterative_refine(task: str, max_iterations: int = 3):
 | Result quality | Subtask results don't combine well | Include aggregation instructions in plan |
 | Cost explosion | Too many subtasks = too many LLM calls | Limit decomposition depth and breadth |
 
-## Best Practices
+## Proven Patterns
 
 1. **Be specific** — "Write a function that does X" is better than "Handle the backend"
 2. **Validate the dependency graph** — check for cycles and missing references before execution

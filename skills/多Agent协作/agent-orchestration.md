@@ -413,7 +413,7 @@ class CheckpointOrchestrator:
 | State explosion | Too many states in state machine | Keep state machine simple; decompose if needed |
 | No observability | Can't debug what agents are doing | Log every state transition and agent output |
 
-## Best Practices
+## Proven Patterns
 
 1. **Start with sequential** — most tasks don't need complex orchestration
 2. **Add parallelism where it helps** — only for truly independent subtasks

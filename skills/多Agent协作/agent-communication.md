@@ -311,7 +311,7 @@ class Blackboard:
 | Schema drift | Agents expect different message formats | Define strict message schemas |
 | Unbounded inbox | Messages accumulate without processing | Set inbox size limits |
 
-## Best Practices
+## Proven Patterns
 
 1. **Define message schemas** — use Pydantic or typed dicts for all messages
 2. **Log all communication** — essential for debugging multi-agent issues

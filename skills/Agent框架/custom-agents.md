@@ -401,7 +401,7 @@ def self_correcting_agent(query: str, max_retries: int = 3):
 | Blocking I/O | Synchronous tool calls block streaming | Use async tools with `asyncio` |
 | Race conditions | Concurrent tool calls interfere | Use locks or sequential execution |
 
-## Best Practices
+## Proven Patterns
 
 1. **Start simple** — a basic ReAct loop handles 80% of use cases
 2. **Add tools incrementally** — don't build a tool registry until you need one

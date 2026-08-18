@@ -385,7 +385,7 @@ def forget_old_memories(memory: AgentMemory, days: int = 90):
 | Retrieval latency | Graph queries are slow | Cache frequent queries; limit search depth |
 | Context window overflow | Too much memory in prompt | Prioritize by recency and relevance |
 
-## Best Practices
+## Proven Patterns
 
 1. **Extract facts, not just store text** — knowledge graphs are more useful than raw text
 2. **Track provenance** — where each fact came from and when

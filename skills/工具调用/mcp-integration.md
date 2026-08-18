@@ -365,7 +365,7 @@ async def discover_and_act(session, query):
 | Security | MCP server exposes sensitive operations | Authenticate and authorize tool calls |
 | Large resources | Reading huge files via resource | Implement pagination and streaming |
 
-## Best Practices
+## Proven Patterns
 
 1. **Namespace tool names** — prefix with server name when connecting to multiple servers
 2. **Use stdio for local servers** — faster and more reliable than HTTP/SSE

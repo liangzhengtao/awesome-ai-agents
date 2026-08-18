@@ -126,7 +126,7 @@ Every skill file follows the same structure:
 - **Code Templates** — Production-ready Python code, copy-paste ready / 代码模板——生产级 Python 代码，可直接复制使用
 - **Patterns** — Common design patterns with code / 设计模式——附带代码的常见设计模式
 - **Pitfalls** — Things that will bite you (with solutions) / 常见陷阱——会坑你的问题（附解决方案）
-- **Best Practices** — Hard-won production wisdom / 最佳实践——来自生产环境的经验总结
+- **Proven Patterns** — Hard-won production wisdom / 最佳实践——来自生产环境的经验总结
 - **See Also** — Cross-references to related skills / 相关技能——交叉引用
 
 ---

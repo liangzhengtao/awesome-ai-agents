@@ -16,7 +16,7 @@ What does this PR do? / 这个 PR 做了什么？
 - [ ] I have read [CONTRIBUTING.md](CONTRIBUTING.md)
 - [ ] My skill file follows the [skill template](CONTRIBUTING.md#skill-template)
 - [ ] My skill has 150+ lines
-- [ ] My skill contains all required sections (When to Use, Architecture, Code Template, Patterns, Pitfalls, Best Practices)
+- [ ] My skill contains all required sections (When to Use, Architecture, Code Template, Patterns, Pitfalls, Proven Patterns)
 - [ ] Code examples are runnable Python 3.11+
 - [ ] I have added cross-references (`See Also`) to related skills
 - [ ] I have tested the code examples (where applicable)

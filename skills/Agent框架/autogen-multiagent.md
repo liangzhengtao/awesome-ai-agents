@@ -256,7 +256,7 @@ async def run_pipeline(tasks: list[str]):
 | Message overflow | Long conversations exceed context | Implement message truncation or summarization |
 | Monologue | Agent talks to itself repeatedly | Set `allowed_or_disallowed_speaker_transitions` |
 
-## Best Practices
+## Proven Patterns
 
 1. **Set `max_round` on every group chat** — prevents runaway conversations
 2. **Use `human_input_mode="NEVER"` for automated pipelines** — but `"ALWAYS"` for interactive use

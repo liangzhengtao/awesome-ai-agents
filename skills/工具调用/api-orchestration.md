@@ -338,7 +338,7 @@ async def stripe_webhook(request: Request):
 | API key exposure | Keys leaked in logs or errors | Mask sensitive headers in logs |
 | No circuit breaker | Failing API drags down whole agent | Open circuit after N failures |
 
-## Best Practices
+## Proven Patterns
 
 1. **Use `httpx` over `requests`** — async support, connection pooling, HTTP/2
 2. **Set timeouts on every request** — both connection and read timeouts
