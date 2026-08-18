@@ -1,6 +1,6 @@
 # LangChain Agents
 
-> Build production-ready AI agents using LangChain's agent framework with tool calling, memory, and multi-step reasoning.
+> Build production AI agents using LangChain's agent framework with tool calling, memory, and multi-step reasoning.
 
 ## When to Use
 
